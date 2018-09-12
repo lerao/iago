@@ -1,0 +1,326 @@
+<div class="home-frame">
+  <div class="container">
+    <div class="row" style="margin-top: 50px;">
+
+      <div class="col-md-6 col-xs-12">
+        <h1 class="title-dataset">{{vm.rowCollectionDetails.datasetRealName}} <span class="span-title">{{vm.rowCollectionDetails.category}}</span></h1>
+         
+       <br>
+      </div>
+      <div class="col-md-6 col-xs-12 align-right">
+        <div class="navbar">
+          <ul class="nav navbar-nav">
+            <!--<li class="active">
+              <a href ng-href="#/preview/{{vm.datasetURI}}" target="_self">
+                <i class="fa fa-table" aria-hidden="true"></i> 
+                Pré-visualizar</a>
+            </li>
+            -->
+          </ul>
+          <ul class="nav navbar-nav" >
+            <li class="dropdown button-dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" id="color-dropdown">
+                <i class="fa fa-download" aria-hidden="true"></i> 
+                Exportar <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" >
+                <li ng-repeat="opt in vm.download" ng-bind-html-unsafe="opt.text" >
+                  <a href ng-href="{{vm.linkUri}}{{ opt.Formato }}/download" target="_blank"><i class="ion-android-download"></i>{{ opt.Formato | uppercase }}</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <!--
+          <ul class="nav navbar-nav" > 
+            <li class="dropdown button-dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" id="color-dropdown">API<span class="caret"></span></a>
+              <ul class="dropdown-menu" >
+                <li ng-repeat="opt in vm.download" ng-bind-html-unsafe="opt.text" >
+                  <a href ng-show="opt.Formato != 'csv'" ng-href="{{vm.linkUri}}{{ opt.Formato }}" target="_blank" ><i class="ion-arrow-swap"></i>{{ opt.Formato | uppercase }}</a>
+                </li>
+              </ul>
+            </li>  
+          </ul>
+          -->
+
+          <ul class="nav navbar-nav" >
+            <li class="dropdown button-dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" id="color-dropdown">
+                <i class="fa fa-cogs" aria-hidden="true"></i> 
+                API <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" >
+                <!--
+                <li ng-bind-html-unsafe="opt.text" >
+                  <a href ng-href="{{vm.linkUriApi}}" target="_blank"><i class="ion-android-download"></i>Dados</a>
+                </li>-->
+                <li  ng-bind-html-unsafe="opt.text" >
+                  <a href ng-href="#/details/{{vm.datasetURI}}/custom_api"><i class="ion-android-download"></i>Consulta Personalizada</a>
+                </li>
+                <li ng-bind-html-unsafe="opt.text" >
+                  <a href ng-href="{{vm.linkUriApiDocumentacao}}" target="_self"><i class="ion-android-download"></i>Documentação</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <a class="button-back" href="javascript: history.back(-1)">
+            <i class="fa fa-undo"></i> Voltar
+          </a>
+        </div>
+        
+        <br>
+        <!-- -->
+      </div>
+    </div>
+    <hr style="margin: 0px;">
+    <div class="row">
+      <div class="col-md-8 padding-top-10">
+        <p class="align-left"><span style="font-size: 15px; color:#333;"><b>DESCRIÇÃO:</b> </span><br> {{vm.rowCollectionDetails.description}}</p>
+      </div>
+      <div class="col-md-4 padding-top-10 border-left">
+        <p class="align-left"><span style="font-size: 15px; color:#333;"><b>ÚLTIMA VERSÃO:</b> </span>
+            <span style="font-size: 15px; color:#333;" ng-repeat="opt in vm.lastVersion">
+                <font ng-show="$last == true">
+                  <u>{{opt.version}}</u>
+                  <br>
+                  <em>
+                    {{opt.description}}<br>
+                    {{opt.date}}
+                  </em>
+                </font>
+            </span>
+          </p>
+      </div>
+    </div>
+    <br><br>
+    <div class="row">
+     <div class="col-md-12">
+        <h3 class="align-left">
+          <i class="fa fa-info-circle" aria-hidden="true"></i> 
+          Como consultar subconjuntos de dados? 
+          <a href ng-href="{{vm.linkMetadadosApi}}" target="_blank" class="pull-right"> <small> (acessar metadados via API)</small></a>
+        </h3>
+        <div class="col-xs-12 col-md-12" align="left">
+          <p style="text-align: left; font-size: 16px;">Para consultar subconjuntos de dados, a API deve ser consumida. Para isso, é necessário enviar uma requisição HTTP POST em formato application/JSON para: </p>
+           <code> http://150.161.0.22:3000/iago/open/execute_query</code><br><br>
+           <p> Os parâmetros a serem preenchidos são: </p>
+          
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <th class="description-data">
+                  datasetName
+                </th>
+                <td class="description-data">
+                  Nome do Conjunto de Dados em que o subconjunto deve se originar
+                </td>
+              </tr>
+              <tr>
+                <th class="description-data">version </th>
+                <td class="description-data">Versão do Conjunto de Dados que o subconjunto deve se originar</td>
+              </tr>
+              <tr>
+                <th class="description-data">parameters </th>
+                <td class="description-data">Lista de parâmetros em que será realizada a filtragem, por ser em formato Map, é totalmente flexível para que possa receber qualquer propriedade para a verificação. A comparação deve ser feita apenas em chave-valor.</td>
+              </tr>
+              <tr>
+                <th class="description-data">limit </th>
+                <td class="description-data">Limite máximo de registros a serem retornados. O valor máximo é de 10000.</td>
+              </tr>
+              <tr>
+                <th class="description-data">page </th>
+                <td class="description-data">Página referente ao resultado obtido. Cada página contém 10000 registros. Recomenda-se que para a primeira requisição, o campo seja preenchido com o valor “1”.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+
+          <p style="font-size: 16px;">Supondo que uma consulta seja realizada em um conjunto de dados hipotético "Alunos", em que o usuário deseje retornar alunos com idade de 20 anos do curso de Ciência da Computação:
+          </p> 
+          <code style="background: none">
+            <pre>
+              {
+                "datasetName" : "Alunos",
+                "version" : "42891448230",
+                "parameters" : {
+                      "idade" : "20",
+                      "curso" : "Ciência da Computação"
+              },
+                "limit" : "2000",
+                "page" : 1
+              }
+            </pre>
+          </code> 
+
+          <p style="font-size: 16px;">
+            Em resposta, A API retornará os seguintes valores em formato application/JSON:
+          </p>
+
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <th class="description-data">
+                  datasetName
+                </th>
+                <td class="description-data">
+                  Nome do Conjunto de Dados em que o subconjunto se originou
+                </td>
+              </tr>
+              <tr>
+                <th class="description-data">pagesNumber  </th>
+                <td class="description-data">Número total de páginas do resultado da consulta. Cada página contém no máximo 10000 registros</td>
+              </tr>
+              <tr>
+                <th class="description-data">rowsNumber  </th>
+                <td class="description-data">Número total de registros do resultado da consulta</td>
+              </tr>
+              <tr>
+                <th class="description-data">atualPage  </th>
+                <td class="description-data">Página referente aos registros retornados</td>
+              </tr>
+              <tr>
+                <th class="description-data">data  </th>
+                <td class="description-data">Dados de retorno</td>
+              </tr>              
+            </tbody>
+          </table><br>
+          <hr>
+          <p style="font-size: 16px;">
+             <div class="row">
+                <div class="col-md-8 padding-top-10">
+                  <h3 class="align-left">Gerar Subconjuntos via API:</h3>
+                </div>
+
+                <br clear="all">
+                <div class="col-md-7">
+                  <div class="col-md-12 align-left">
+                    <div class="col-md-4">      
+                      Conjunto de dados
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" ng-model="subconjunto.datasetName" class="input-sm col-md-12 readonly" ng-readonly="true">
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="col-md-4 align-left">      
+                      Versão
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" ng-model="subconjunto.version" class="input-sm col-md-12">
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="col-md-4 align-left">      
+                      Limite de Registros
+                    </div>
+                    <div class="col-md-8">
+                      <input type="number" class="input-sm col-xs-6" ng-model="subconjunto.limit" min="1" max="10000" step="100">
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="col-md-4 align-left">      
+                      Página
+                    </div>
+                    <div class="col-md-8">
+                      <input type="number" step="1" ng-model="subconjunto.page" class="input-sm col-xs-6">
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="col-md-4 align-left">
+                      Filtros
+                    </div>
+                    <div class="col-md-8">
+                      <div class="field-group">
+                        <fieldset  data-ng-repeat="choice in choices">
+                          
+                          <md-autocomplete
+                            ng-disabled = "vm.isDisabled"
+                            md-no-cache = "false"
+                            md-selected-item = "choice.selectedItem"
+                            md-search-text-change = "vm.searchTextChange(choice.parameter)"
+                            md-search-text = "choice.parameter"
+                            md-selected-item-change = "vm.selectedItemChange(item)"
+                            md-items = "item in vm.querySearch(choice.parameter)"
+                            md-item-text = "item.display"
+                            md-min-length = "0"
+                            placeholder = "Parâmetro"
+                            ng-required="true"
+                            ng-focus="verificaParametros()" 
+                            ng-blur="verificaParametros()"
+                            style="width: 45% !important; float: left; margin-right: 2px; text-align: left !important; font-size: 12px !important;">
+                            
+                            <md-item-template>
+                               <span md-highlight-text = "choice.parameter"
+                                  md-highlight-flags = "^i">{{item.display}}</span>
+                            </md-item-template>
+                            
+                            <md-not-found>
+                               ERRO! Nenhum registro encontrado.
+                            </md-not-found>
+                          </md-autocomplete>
+                          <input type="text" ng-model="choice.value" class="input-sm form-control2 col-xs-3" ng-focus="verificaParametros()" ng-blur="verificaParametros()" required="true" placeholder="Valor" style="width: 45% !important; float: left">
+                          <button class="remove add" ng-show="$last" style="height: 30px" ng-click="addNewChoice()">+</button>
+
+                          <!--
+                            <input type="text" ng-model="choice.parameter" class="input-sm form-control2 col-xs-3" placeholder="Parâmetro"  required="true" ng-focus="verificaParametros()" ng-blur="verificaParametros()" style="width: 45% !important; float: left; margin-right: 2px">
+                            
+                            <input type="text" ng-model="choice.value" class="input-sm form-control2 col-xs-3" ng-focus="verificaParametros()" ng-blur="verificaParametros()" required="true" placeholder="Valor" style="width: 45% !important; float: left">
+
+                            <button class="remove" ng-show="$last" ng-click="removeChoice()">-</button>
+                          -->
+                       </fieldset>
+                      </div>
+                      <div ng-show="vm.suggestionText" style="border: 1px dashed #ccc; padding: 4px; font-size: 11px">
+                        {{vm.suggestionText}}
+                      </div>
+                      <br/>
+
+                    </div>
+                  </div>
+                  <br clear="all">
+                  <br clear="all">
+                  <button class="add" style="margin-left: 10px; margin-bottom: 20px; background: blue; color: white; height: 30px" ng-click="submitFormSubconjunto(subconjunto);">Gerar subconjunto!</button>
+                </div>
+                <div class="col-md-5">
+                  <code> POST </code>&nbsp;&nbsp;<code> http://150.161.0.22:3000/iago/open/execute_query</code>  
+                  <code style="background: none">
+                    <pre class="align-left">
+                        {
+                          "datasetName" : "{{subconjunto.datasetName || vm.rowCollectionDetails.identifierUri}}",
+                          "version" : "{{subconjunto.version}}",
+                          "parameters" : {{subconjunto.parameters}},
+                          "limit" : "{{subconjunto.limit}}",
+                          "page" : "{{subconjunto.page}}"
+                        }
+                      
+                    </pre>
+                  </code>
+                </div>
+
+              <div class="row">
+                <div class="col-md-8 padding-top-10" id="retornoConsulta">
+                  <h3 class="align-left">Resultado:</h3>
+                </div>
+                <div class="col-md-12">
+                  <code> JSON </code>
+                  <code style="background: none">
+                    <pre class="align-left">
+                      {{retornoConsulta | json}}
+                    </pre>
+                  </code>
+                </div>
+              </div>
+            </div>
+
+          </p><br><br><br><br>
+        </div>
+        
+      </div>
+    </div>
+
+    
+</div>
+</div>
+
+    
